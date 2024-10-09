@@ -1,11 +1,12 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from get_api_app import Get_API_Application
+from get_main_app import Main_Application
 import sys
 from pathlib import Path
 
 
 def open_api_key_window():
-    # if the file ../data/apy_key.txt does not exist, open the window to get the user's API key before allowing them to use the app
+    # if the file ../data/api_key.txt does not exist, open the window to get the user's API key before allowing them to use the app
     # https://stackoverflow.com/questions/82831/how-do-i-check-whether-a-file-exists-without-exceptions
     api_key = Path("../data/api_key.txt")
     if not api_key.is_file():
@@ -15,5 +16,13 @@ def open_api_key_window():
         form.show()
         sys.exit(app.exec())
 
+def open_main_app_window():
+    # code borrowed from code automatically generated in main_app_ui.py
+    app = QtWidgets.QApplication(sys.argv)
+    form = Main_Application()
+    form.show()
+    sys.exit(app.exec())
+
 if __name__ == "__main__":
     open_api_key_window()
+    open_main_app_window()

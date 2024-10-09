@@ -39,7 +39,7 @@ class Company(Base):
     symbol = Column(String(255), primary_key=True)
     name = Column(String(255))
 
-engine = create_engine('sqlite:///../output/info.db')
+engine = create_engine('sqlite:///../data/info.db')
 Base.metadata.create_all(engine)
 session = Session(bind=engine)
 
