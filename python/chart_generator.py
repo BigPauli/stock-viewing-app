@@ -14,6 +14,10 @@ api_key = None
 
 def load_api_key():
     global api_key
+
+    if api_key:
+        return
+
     try:
         with open("../data/api_key.txt", "r") as f:
             api_key = f.read()
@@ -21,21 +25,29 @@ def load_api_key():
         pass
 
 def change_in_stock_chart(company, start_date, end_date, *, save_data=False):
-    if not api_key:
-        load_api_key()
+    # load user's api key
+    load_api_key()
 
+    # get company symbol from name
     symbol = get_company_symbol(company)
 
+    # convert start_date and end_date to datetime objects
     start_date = date(start_date.year(), start_date.month(), start_date.day())
     end_date = date(end_date.year(), end_date.month(), end_date.day())
     
+    # build base_url and params that will be consistent between every api call
     base_url = "https://api.twelvedata.com/eod"
     params = {
         "apikey": api_key,
         "symbol": symbol,
     }
     
+    # initialize empty list to store data
     data = []
+
+    # initialize date to increment
+
+    # loop over every day between start date and end date, appending relevant data to the data list
     current_date = start_date
     while current_date <= end_date:
         params["date"] = current_date
@@ -52,10 +64,14 @@ def change_in_stock_chart(company, start_date, end_date, *, save_data=False):
         current_date += timedelta(days=1)
         time.sleep(8)
 
+    # convert data to pandas DataFrame
     df = pd.DataFrame(data)
 
+    # convert columns from strings to the proper data time
     df["date"] = pd.to_datetime(df["date"])
     df["close"] = df["close"].astype("float64")
+
+    # resize plot
     fig, ax = plt.subplots(figsize=(12, 10))
 
     # creating a loop that makes the line red when the score is decreasing, green when increasing, and gray otherwise
@@ -102,24 +118,30 @@ def change_in_stock_chart(company, start_date, end_date, *, save_data=False):
     
     plt.show()
 
+    # save the data if the user requests it
     if save_data:
         df.to_csv(f"../output/change_in_stock_{symbol}_{start_date}_to_{end_date}.csv", index=False)
     
     
 
 def sector_comparison_chart(date, *, save_data=False):
-    if not api_key:
-        load_api_key()
+    # loads the user's api_key
+    load_api_key()
 
+    # convert QDate to string
     date = f"{date.year()}-{date.month()}-{date.day()}"
 
+    # build base url and params that are consistent between api calls
     base_url = "https://api.twelvedata.com/eod"
     params = {
         "apikey": api_key,
         "date": date
     }
 
+    # initialize empty list for storing data
     data = []
+
+    # loop over every company in SMP 500, make call to api for closing price on the given date, and add it to data list
     for symbol, company, sector in get_column_from_company():
         params["symbol"] = symbol
         response = requests.get(base_url, params).json()
@@ -134,6 +156,7 @@ def sector_comparison_chart(date, *, save_data=False):
             print(f"something went wrong, skipping {company}")
         time.sleep(8)
 
+    # convert data to pandas dataframe
     df = pd.DataFrame(data)
 
     # clean "N/A" and "n.a" sectors to be "Other"
@@ -142,7 +165,10 @@ def sector_comparison_chart(date, *, save_data=False):
     # change price column into float
     df["price"] = df["price"].astype("float64")
 
+    # group all companies by their sectors and take the sum of their closing price
     grouped_df = df.groupby(by="sector").sum()
+
+    # reset the sector back to being column
     grouped_df.reset_index(inplace=True)
     total_shares = grouped_df["price"].sum()
 
@@ -164,24 +190,32 @@ def sector_comparison_chart(date, *, save_data=False):
     # save chart
     plt.savefig(f"../output/sector_comparison_{date}.png")
 
+    # display chart
     plt.show()
 
+    # save the chart if the user wants to
     if save_data:
         df.to_csv(f"../output/sector_comparison_{date}.csv", index=False)
 
 
 def currency_exchange_chart(currency, all_currencies, date, *, save_data=False):
-    if not api_key:
-        load_api_key()
+    # loads the user's api key
+    load_api_key()
 
+    # convert QDate to string
     date = f"{date.year()}-{date.month()}-{date.day()}"
     
+    # build base url and params that are consistent between all api calls
     base_url = "https://api.twelvedata.com/exchange_rate"
     params = {
         "apikey": api_key,
         "date": date
     }
+
+    # initialize empty list to store data
     data = []
+
+    # loop over all currency types, calling api to find the conversion between them and type of user's request. then add this data to the data list
     for currency_type in all_currencies:
         if currency_type == currency:
             data.append([currency, 1])
@@ -195,8 +229,10 @@ def currency_exchange_chart(currency, all_currencies, date, *, save_data=False):
         print(response)
         time.sleep(8)
 
+    # convert data list to pandas dataframe
     df = pd.DataFrame(data, columns=["symbol", "rate"])
 
+    # change the symbol of the chosen symbol to just be its symbol instead of being symbol/symbol
     df["symbol"] = df["symbol"].map(lambda x: x[4:] if len(x) > 3 else x)
     fig = plt.figure(figsize=(12, 10))
 
@@ -210,8 +246,10 @@ def currency_exchange_chart(currency, all_currencies, date, *, save_data=False):
     for i in range(len(df["symbol"])):
         plt.text(i, df["rate"].iloc[i], round(df["rate"].iloc[i], 2), ha="center")
 
+    # rotate the ticks on the x axis by 90 degrees
     plt.xticks(rotation=90)
 
+    # chart styling and axis labelling
     plt.title(f"{currency} Exchange Rates on {date} ")
     plt.xlabel("Currency Type")
     plt.ylabel(f"Exchange Rate per 1 {currency}")

@@ -48,6 +48,7 @@ class Main_Application(QWidget):
         onChanged_actions[self.ui.chart_type_comboBox.currentText()]()
 
     def onPushed(self):
+        # when the "generate chart" button is pushed, call the corresponding function from chart_generator.py with arguments read from inputs
         curr = self.ui.chart_type_comboBox.currentText()
         if curr == "Change in Stock" and self.ui.dateEdit.date() < self.ui.dateEdit_2.date():
             change_in_stock_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date(), self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
