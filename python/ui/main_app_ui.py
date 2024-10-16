@@ -58,6 +58,16 @@ class Ui_Form(object):
         self.dateEdit = QtWidgets.QDateEdit(parent=Form)
         self.dateEdit.setGeometry(QtCore.QRect(20, 190, 141, 22))
         self.dateEdit.setObjectName("dateEdit")
+        self.label_5 = QtWidgets.QLabel(parent=Form)
+        self.label_5.setGeometry(QtCore.QRect(240, 25, 91, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_5.setFont(font)
+        self.label_5.setObjectName("label_5")
+        self.checkBox = QtWidgets.QCheckBox(parent=Form)
+        self.checkBox.setGeometry(QtCore.QRect(240, 50, 70, 17))
+        self.checkBox.setText("")
+        self.checkBox.setObjectName("checkBox")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -70,6 +80,7 @@ class Ui_Form(object):
         self.label_3.setText(_translate("Form", "Currency to Convert"))
         self.label_4.setText(_translate("Form", "Date of Conversion"))
         self.label_2.setText(_translate("Form", "Company"))
+        self.label_5.setText(_translate("Form", "Save Data"))
 
 
 if __name__ == "__main__":

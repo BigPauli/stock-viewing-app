@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 
 data/api_key.txt
+python/chart_style_testing.py

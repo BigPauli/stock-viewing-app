@@ -1,6 +1,6 @@
 from ui.main_app_ui import *
 from db_reader import get_column_from_company
-from chart_generator import change_in_stock_chart, stock_comparison_chart, currency_exchange_chart
+from chart_generator import change_in_stock_chart, sector_comparison_chart, currency_exchange_chart
 from PyQt6.QtWidgets import QApplication, QWidget
 from datetime import date
 import sys
@@ -42,7 +42,7 @@ class Main_Application(QWidget):
         # create dictionary that contains functions to call when chart_type_comboBox is changed to certain value
         onChanged_actions = {
             "Change in Stock": self.change_to_stock_change,
-            "Stock Comparison": self.change_to_stock_comparison,
+            "Sector Comparison": self.change_to_sector_comparison,
             "Currency Exchange Rate": self.change_to_currency_exchange
         }
         onChanged_actions[self.ui.chart_type_comboBox.currentText()]()
@@ -50,19 +50,19 @@ class Main_Application(QWidget):
     def onPushed(self):
         curr = self.ui.chart_type_comboBox.currentText()
         if curr == "Change in Stock" and self.ui.dateEdit.date() < self.ui.dateEdit_2.date():
-            change_in_stock_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date(), self.ui.dateEdit_2.date())
-        elif curr == "Stock Comparison":
-            stock_comparison_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date())
+            change_in_stock_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date(), self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
+        elif curr == "Sector Comparison":
+            sector_comparison_chart(self.ui.dateEdit.date(), save_data=self.ui.checkBox.isChecked())
         else:
-            currency_exchange_chart(self.ui.comboBox_3.currentText(), self.currencies, self.ui.dateEdit_2.date())
+            currency_exchange_chart(self.ui.comboBox_3.currentText(), self.currencies, self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
 
     def change_to_stock_change(self):
         self.hide_hideables()
         self.load_stock_change_elements()
 
-    def change_to_stock_comparison(self):
+    def change_to_sector_comparison(self):
         self.hide_hideables()
-        self.load_stock_comparison_elements()
+        self.load_sector_comparison_elements()
 
     def change_to_currency_exchange(self):
         self.hide_hideables()
@@ -75,7 +75,7 @@ class Main_Application(QWidget):
 
     def populate_combo_boxes(self):
         # populate chart_type_comboBox
-        for item in ["Change in Stock", "Stock Comparison", "Currency Exchange Rate"]:
+        for item in ["Change in Stock", "Sector Comparison", "Currency Exchange Rate"]:
             self.ui.chart_type_comboBox.addItem(item)
         
         # populate comboBox_3 with common currency types
@@ -96,14 +96,13 @@ class Main_Application(QWidget):
         self.ui.dateEdit_2.show()
 
         # change labels where appropriate
+        self.ui.label_2.setText("Company")
         self.ui.label_3.setText("Start Date")
         self.ui.label_4.setText("End Date")
 
 
-    def load_stock_comparison_elements(self):
+    def load_sector_comparison_elements(self):
         # show relevant hideables
-        self.ui.label_2.show()
-        self.ui.comboBox_2.show()
         self.ui.dateEdit.show()
 
         # change labels where appropriate
