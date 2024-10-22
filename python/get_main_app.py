@@ -1,6 +1,7 @@
 from ui.main_app_ui import *
 from db_reader import get_column_from_company
 from chart_generator import change_in_stock_chart, sector_comparison_chart, currency_exchange_chart
+from mock_generator import mock_change_in_stock_chart, mock_sector_comparison_chart, mock_currency_exchange_chart
 from PyQt6.QtWidgets import QApplication, QWidget
 from datetime import date
 import sys
@@ -25,9 +26,10 @@ class Main_Application(QWidget):
         # https://stackoverflow.com/questions/44707794/pyqt-combo-box-change-value-of-a-label
         self.ui.chart_type_comboBox.currentTextChanged.connect(self.onChanged)
         
-        # connect push event to pushButton
+        # connect push event to pushButtons
         # https://stackoverflow.com/questions/15080731/calling-a-function-upon-button-press
         self.ui.pushButton.clicked.connect(self.onPushed)
+        self.ui.pushButton_2.clicked.connect(self.onPushed_2)
 
         # set starting ui to default value
         self.onChanged()
@@ -38,6 +40,7 @@ class Main_Application(QWidget):
         self.ui.dateEdit.setDate(today)
         self.ui.dateEdit_2.setDate(today)
 
+
     def onChanged(self):
         # create dictionary that contains functions to call when chart_type_comboBox is changed to certain value
         onChanged_actions = {
@@ -46,6 +49,7 @@ class Main_Application(QWidget):
             "Currency Exchange Rate": self.change_to_currency_exchange
         }
         onChanged_actions[self.ui.chart_type_comboBox.currentText()]()
+
 
     def onPushed(self):
         # when the "generate chart" button is pushed, call the corresponding function from chart_generator.py with arguments read from inputs
@@ -56,6 +60,18 @@ class Main_Application(QWidget):
             sector_comparison_chart(self.ui.dateEdit.date(), save_data=self.ui.checkBox.isChecked())
         else:
             currency_exchange_chart(self.ui.comboBox_3.currentText(), self.currencies, self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
+
+
+    def onPushed_2(self):
+        # when the "generate chart (mock data)" button is pushed, call the corresponding function from mock_generator.py with arguments read from inputs
+        curr = self.ui.chart_type_comboBox.currentText()
+        if curr == "Change in Stock" and self.ui.dateEdit.date() < self.ui.dateEdit_2.date():
+            mock_change_in_stock_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date(), self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
+        elif curr == "Sector Comparison":
+            mock_sector_comparison_chart(self.ui.dateEdit.date(), save_data=self.ui.checkBox.isChecked())
+        else:
+            mock_currency_exchange_chart(self.ui.comboBox_3.currentText(), self.currencies, self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
+
 
     def change_to_stock_change(self):
         self.hide_hideables()
@@ -74,6 +90,7 @@ class Main_Application(QWidget):
         for element in self.hideable_ui_elements:
             element.hide()
 
+
     def populate_combo_boxes(self):
         # populate chart_type_comboBox
         for item in ["Change in Stock", "Sector Comparison", "Currency Exchange Rate"]:
@@ -88,6 +105,7 @@ class Main_Application(QWidget):
         for item in sorted(get_column_from_company("name", flatten=True)):
             self.ui.comboBox_2.addItem(item)
     
+
     def load_stock_change_elements(self):
         # show relevant hideables
         self.ui.label_2.show()
@@ -108,6 +126,7 @@ class Main_Application(QWidget):
 
         # change labels where appropriate
         self.ui.label_3.setText("Date")
+
 
     def load_currency_exchange_elements(self):
         # show relevant hideables

@@ -24,7 +24,7 @@ class Ui_Form(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.pushButton = QtWidgets.QPushButton(parent=Form)
-        self.pushButton.setGeometry(QtCore.QRect(150, 260, 91, 23))
+        self.pushButton.setGeometry(QtCore.QRect(150, 230, 91, 23))
         self.pushButton.setObjectName("pushButton")
         self.label_3 = QtWidgets.QLabel(parent=Form)
         self.label_3.setGeometry(QtCore.QRect(20, 160, 121, 21))
@@ -68,6 +68,9 @@ class Ui_Form(object):
         self.checkBox.setGeometry(QtCore.QRect(240, 50, 70, 17))
         self.checkBox.setText("")
         self.checkBox.setObjectName("checkBox")
+        self.pushButton_2 = QtWidgets.QPushButton(parent=Form)
+        self.pushButton_2.setGeometry(QtCore.QRect(110, 260, 171, 23))
+        self.pushButton_2.setObjectName("pushButton_2")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -81,6 +84,7 @@ class Ui_Form(object):
         self.label_4.setText(_translate("Form", "Date of Conversion"))
         self.label_2.setText(_translate("Form", "Company"))
         self.label_5.setText(_translate("Form", "Save Data"))
+        self.pushButton_2.setText(_translate("Form", "Generate Chart (Mock Data)"))
 
 
 if __name__ == "__main__":

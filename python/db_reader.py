@@ -29,3 +29,4 @@ if __name__ == "__main__":
     # print(list(get_column_from_company("sector", flatten=True)))
     # print(get_column_from_company("name", flatten=True))
     # print(get_company_symbol("3m Company"))
+    pass
