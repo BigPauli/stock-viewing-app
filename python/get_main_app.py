@@ -54,8 +54,9 @@ class Main_Application(QWidget):
     def onPushed(self):
         # when the "generate chart" button is pushed, call the corresponding function from chart_generator.py with arguments read from inputs
         curr = self.ui.chart_type_comboBox.currentText()
-        if curr == "Change in Stock" and self.ui.dateEdit.date() < self.ui.dateEdit_2.date():
-            change_in_stock_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date(), self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
+        if curr == "Change in Stock":
+            if self.ui.dateEdit.date() < self.ui.dateEdit_2.date():
+                change_in_stock_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date(), self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
         elif curr == "Sector Comparison":
             sector_comparison_chart(self.ui.dateEdit.date(), save_data=self.ui.checkBox.isChecked())
         else:
@@ -65,8 +66,9 @@ class Main_Application(QWidget):
     def onPushed_2(self):
         # when the "generate chart (mock data)" button is pushed, call the corresponding function from mock_generator.py with arguments read from inputs
         curr = self.ui.chart_type_comboBox.currentText()
-        if curr == "Change in Stock" and self.ui.dateEdit.date() < self.ui.dateEdit_2.date():
-            mock_change_in_stock_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date(), self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
+        if curr == "Change in Stock":
+            if self.ui.dateEdit.date() < self.ui.dateEdit_2.date():
+                mock_change_in_stock_chart(self.ui.comboBox_2.currentText(), self.ui.dateEdit.date(), self.ui.dateEdit_2.date(), save_data=self.ui.checkBox.isChecked())
         elif curr == "Sector Comparison":
             mock_sector_comparison_chart(self.ui.dateEdit.date(), save_data=self.ui.checkBox.isChecked())
         else:

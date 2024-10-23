@@ -147,7 +147,6 @@ def bar_chart_from_df(df, currency, date, *, save_data=False, mock=False):
     plt.title(f"{currency} Exchange Rates on {date} ")
     plt.xlabel("Currency Type")
     plt.ylabel(f"Exchange Rate per 1 {currency}")
-    plt.title(f"% Makeup of SMP 500 by Sector{' (Mock Data)' if mock else ''}")
 
     # save chart
     plt.savefig(f"../output/{'mock_' if mock else ''}currency_exchange_{date}.png")
