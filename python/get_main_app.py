@@ -104,7 +104,7 @@ class Main_Application(QWidget):
             self.ui.comboBox_3.addItem(item)
 
         # populate comboBox_2 with all SMP 500 companies from database
-        for item in sorted(get_column_from_company("name", flatten=True)):
+        for item in filter(lambda x: "'" not in x, sorted(get_column_from_company("name", flatten=True))):
             self.ui.comboBox_2.addItem(item)
     
 
